@@ -1,0 +1,48 @@
+﻿@model IEnumerable<CommonDLL.DTO.Accounts>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PersonName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AccountNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OutstandingBalance)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.PersonName)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.AccountNumber)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.OutstandingBalance)
+    </td>
+    <td>
+        @Html.ActionLink("Edit", "Edit", new { id = item.Code }, new { @class = "btn btn-primary btn-sm" })
+        |
+        @Html.ActionLink("Details", "Details", new { id = item.Code }, new { @class = "btn btn-info btn-sm" })
+        |
+        @Html.ActionLink("Delete", "Delete", new { id = item.Code }, new { @class = "btn btn-danger btn-sm", onclick = "return confirm('Are you sure you want to delete this item?');" })
+    </td>
+
+</tr>
+}
+
+</table>
