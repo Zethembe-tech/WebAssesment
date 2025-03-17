@@ -11,7 +11,7 @@
 //    public static class StringHelper
 //    {
 
-//        private static string Salt {get;set;} = "AspireClient";
+//        private static string Salt {get;set;} = "WebAssessment";
 //        public static bool IsValidEmail(string email)
 //        {
 //            try

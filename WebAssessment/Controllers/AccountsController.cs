@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
-using AspireClient.Controllers.Cache;
+using WebAssessment.Controllers.Cache;
 using BusinessLogicDLL.BusinessRepo;
 using CommonDLL.DTO;
 using CommonDLL.Object;
@@ -15,13 +15,14 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebAssessment.Models;
+using AccountViewModel = CommonDLL.DTO.AccountViewModel;
 
 namespace WebAssessment.Controllers
 {
-    //[Authorize]
     public class AccountsController : ClientControllerBase
     {
         readonly private AccountsLogic AccLogic = new AccountsLogic();
+        readonly private PersonsLogic perLogic = new PersonsLogic();
 
 
         #region Class Instantiation
@@ -39,11 +40,26 @@ namespace WebAssessment.Controllers
         }
 
         #endregion
-        public ActionResult Index()
+
+        public ActionResult Index(string searchTerm, string searchAccountNumber, string searchIdNumber)
         {
             try
             {
                 var accounts = AccLogic.ListAllAccounts();
+
+                if (!string.IsNullOrEmpty(searchTerm) || !string.IsNullOrEmpty(searchAccountNumber) || !string.IsNullOrEmpty(searchIdNumber))
+                {
+                    accounts = accounts.Where(a =>
+                        (!string.IsNullOrEmpty(searchTerm) && a.Person.Name.Contains(searchTerm)) ||
+                        (!string.IsNullOrEmpty(searchAccountNumber) && a.AccountNumber.Contains(searchAccountNumber)) ||
+                        (!string.IsNullOrEmpty(searchIdNumber) && a.Person.IdNumber.Contains(searchIdNumber))
+                    ).ToList();
+                }
+
+                ViewBag.SearchTerm = searchTerm;
+                ViewBag.SearchAccountNumber = searchAccountNumber;
+                ViewBag.SearchIdNumber = searchIdNumber;
+
                 return View(accounts);
             }
             catch (Exception e)
@@ -53,11 +69,14 @@ namespace WebAssessment.Controllers
             }
         }
 
+
+
         public ActionResult Details(int id)
         {
-            try 
+            try
             {
                 var accounts = AccLogic.GetAccountById(id);
+                Cache.CacheObject(new CacheObject { Key = "cacheOutstandingBalance", Value = accounts.OutstandingBalance.ToString() });
                 return View(accounts);
             }
             catch (Exception e)
@@ -67,12 +86,27 @@ namespace WebAssessment.Controllers
             }
         }
 
+        public ActionResult Create()
+        {
+            var personList = perLogic.ListAllPersonNames();
+
+            var viewModel = new CommonDLL.DTO.AccountViewModel
+            {
+                PersonList = new SelectList(personList, "Code", "Name")
+            };
+
+            return View(viewModel);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(Accounts acc)
         {
             try
             {
-                var results = AccLogic.AddNewAccount(acc.AccountNumber,acc.PersonCode, acc.OutstandingBalance);
-                return View(results);
+                var results = AccLogic.AddNewAccount(acc.AccountNumber, acc.PersonCode, acc.OutstandingBalance);
+                return RedirectToAction("Index");
             }
             catch (Exception e)
             {
@@ -80,28 +114,52 @@ namespace WebAssessment.Controllers
                 return View(new List<Accounts>());
             }
         }
-
         public ActionResult Edit(int id)
         {
-
+            var model = new AccountViewModel();
             var account = AccLogic.GetAccountById(id);
-
             if (account == null)
             {
-                return HttpNotFound();
+                TempData["ErrorMessage"] = "Account not found.";
+                return RedirectToAction("Index");
             }
-            return View(account);
+            var AccountNumberList = AccLogic.ListAllAccounts();
+
+            if (!AccountNumberList.Any(a => a.AccountNumber == account.AccountNumber))
+            {
+                TempData["ErrorMessage"] = "Account number is not valid.";
+                return RedirectToAction("Index");
+            }
+
+            string balance = Cache.GetObjectByKey("cacheOutstandingBalance").Value;
+            decimal outstandingBalance = Decimal.TryParse(balance, out decimal result) ? result : 0;
+
+            var personList = perLogic.GetPersonDetails(id);
+
+            var viewModel = new AccountViewModel
+            {
+                Code = account.Code,
+                PersonCode = account.PersonCode,
+                AccountNumber = account.AccountNumber,  
+                OutstandingBalance = outstandingBalance,
+                PersonList = new SelectList(personList, "Code", "Name", account.PersonCode),
+                AccountList = new SelectList(AccountNumberList, "AccountNumber", "AccountNumber", account.AccountNumber)
+            };
+
+            return View(viewModel);
         }
+
+
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Accounts acc)
+        public ActionResult Edit(AccountViewModel acc)
         {
             try
             {
                 var results = AccLogic.EditAccount(acc.Code, acc.AccountNumber, acc.PersonCode, acc.OutstandingBalance);
-                return View(results);
+                return RedirectToAction("Index");
             }
             catch (Exception e)
             {
@@ -110,25 +168,46 @@ namespace WebAssessment.Controllers
             }
         }
 
+        [HttpPost]
         public ActionResult Delete(int id)
         {
             try
             {
-                if (id == 0)
+                var result = AccLogic.DeleteAccount(id);
+                if (result == "Closed")
                 {
-                    throw new Exception("Invalid ID");
+                    TempData["Message"] = "Account already closed.";
+                }
+         
+                return RedirectToAction("Index");
+            }
+            catch (Exception e)
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the account: " + e.Message;
+                return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        public ActionResult Close(int id)
+        {
+            try
+            {
+                var result = AccLogic.CheckStatus(id);
+                if (result == "Closed")
+                {
+                    TempData["Message"] = "Account already closed.";
+                    TempData.Keep("Message"); 
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    string status = "Closed";
+                    var results = AccLogic.UpdateStatus(id, status);
+                    TempData["Message"] = "Account closed successfully.";
+                    TempData.Keep("Message"); 
+
                 }
 
-                var transactionResult = AccLogic.DeleteTransactionAccount(id);
-
-                if (transactionResult.Contains("DELETED"))
-                {
-                    var accountResult = AccLogic.DeleteAccount(id);
-                    TempData["SuccessMessage"] = "Account deleted successfully.";
-                    return RedirectToAction("Index"); 
-                }
-
-                TempData["ErrorMessage"] = "Failed to delete account.";
                 return RedirectToAction("Index");
             }
             catch (Exception e)

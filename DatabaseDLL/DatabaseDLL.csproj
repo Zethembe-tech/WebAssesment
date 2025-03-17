@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseRepo\AccountsRepo.cs" />
+    <Compile Include="DatabaseRepo\LoginRepo.cs" />
     <Compile Include="DatabaseRepo\PersonsRepo.cs" />
     <Compile Include="DatabaseRepo\TransactionsRepo.cs" />
     <Compile Include="DatabaseRepo\UserRepository.cs" />

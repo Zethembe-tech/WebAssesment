@@ -105,7 +105,7 @@ namespace DatabaseDLL.DatabaseRepo
                 {
                     Connection = conn,
                     CommandType = CommandType.StoredProcedure,
-                    CommandText = "stp_PurchaseOrder_GetDetailsById"
+                    CommandText = "stp_User_GetDetailsByUsername"
                 })
                 {
                     cmd.Parameters.AddWithValue("@Username", Username);

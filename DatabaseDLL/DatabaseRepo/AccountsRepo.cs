@@ -32,15 +32,21 @@ namespace DatabaseDLL.DatabaseRepo
                     {
                         while (rdr.Read())
                         {
-                            returnList.Add(new Accounts
+                            var account = new Accounts
                             {
                                 Code = rdr.GetInt32(0),
                                 PersonCode = rdr.GetInt32(1),
                                 AccountNumber = rdr.IsDBNull(2) ? "" : rdr.GetString(2),
                                 OutstandingBalance = rdr.IsDBNull(3) ? 0 : rdr.GetDecimal(3),
-                                PersonName = rdr.IsDBNull(4) ? "" : rdr.GetString(4),
+                            };
 
-                            });
+                            account.Person = new Persons
+                            {
+                                Code = rdr.GetInt32(1),
+                                Name = rdr.IsDBNull(4) ? "" : rdr.GetString(4)
+                            };
+
+                            returnList.Add(account);
                         }
                         rdr.Close();
                     }
@@ -50,38 +56,49 @@ namespace DatabaseDLL.DatabaseRepo
             }
             return returnList;
         }
+       
 
         public Accounts GetAccountById(int Id)
         {
             var model = new Accounts();
-            using (
-               var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString)
-               )
+            try
             {
-                conn.Open();
-                using (var cmd = new SqlCommand
+                using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
                 {
-                    Connection = conn,
-                    CommandType = CommandType.StoredProcedure,
-                    CommandText = "stp_Accounts_GetDetailsById"
-                })
-                {
-                    cmd.Parameters.AddWithValue("@Code", Id);
-                    using (var rdr = cmd.ExecuteReader())
+                    conn.Open();
+                    using (var cmd = new SqlCommand
                     {
-                        if (rdr.Read())
+                        Connection = conn,
+                        CommandType = CommandType.StoredProcedure,
+                        CommandText = "stp_Accounts_GetDetailsById"
+                    })
+                    {
+                        cmd.Parameters.AddWithValue("@Code", Id);
+                        using (var rdr = cmd.ExecuteReader())
                         {
-                            model.Code = rdr.GetInt32(0);
-                            model.PersonCode = rdr.GetInt32(1);
-                            model.AccountNumber = rdr.IsDBNull(2) ? "" : rdr.GetString(2);
-                            model.OutstandingBalance = rdr.IsDBNull(3) ? 0 : rdr.GetDecimal(3);
-                            model.PersonName = rdr.IsDBNull(4) ? "" : rdr.GetString(4);
+                            if (rdr.Read())
+                            {
+                                model.Code = rdr.GetInt32(0);
+                                model.PersonCode = rdr.GetInt32(1);
+                                model.AccountNumber = rdr.IsDBNull(2) ? "" : rdr.GetString(2);
+                                model.OutstandingBalance = rdr.IsDBNull(3) ? 0 : rdr.GetDecimal(3);
+
+                                model.Person = new Persons
+                                {
+                                    Code = rdr.GetInt32(1),
+                                    Name = rdr.IsDBNull(4) ? "" : rdr.GetString(4)
+                                };
+                            }
+                            rdr.Close();
                         }
-                        rdr.Close();
                     }
+                    conn.Close();
+                    conn.Dispose();
                 }
-                conn.Close();
-                conn.Dispose();
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("An error occurred while fetching account details.", ex);
             }
             return model;
         }
@@ -217,6 +234,71 @@ namespace DatabaseDLL.DatabaseRepo
 
             return string.Empty;
         }
+        public string UpdateStatus(int code, string Status)
+        {
 
+            using (
+               var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString)
+               )
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandType = CommandType.StoredProcedure,
+                    CommandText = "stp_Accounts_StatusUpdate"
+                })
+                {
+                    cmd.Parameters.AddWithValue("@Code ", code);
+                    cmd.Parameters.AddWithValue("@Status", Status);
+
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.Read())
+                        {
+                            return rdr.IsDBNull(0) ? "" : rdr.GetString(0);
+                        }
+                        rdr.Close();
+                    }
+                }
+                conn.Close();
+                conn.Dispose();
+            }
+
+            return string.Empty;
+        }
+
+        public string CheckStatus(int code)
+        {
+
+            using (
+               var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString)
+               )
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand
+                {
+                    Connection = conn,
+                    CommandType = CommandType.StoredProcedure,
+                    CommandText = "stp_Accounts_StatusCheck"
+                })
+                {
+                    cmd.Parameters.AddWithValue("@Code ", code);
+
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        if (rdr.Read())
+                        {
+                            return rdr.IsDBNull(0) ? "" : rdr.GetString(0);
+                        }
+                        rdr.Close();
+                    }
+                }
+                conn.Close();
+                conn.Dispose();
+            }
+
+            return string.Empty;
+        }
     }
 }

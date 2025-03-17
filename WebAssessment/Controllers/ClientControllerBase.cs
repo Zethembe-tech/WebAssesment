@@ -1,4 +1,4 @@
-﻿using AspireClient.Controllers.Cache;
+﻿using WebAssessment.Controllers.Cache;
 using BusinessLogicDLL;
 using BusinessLogicDLL.BusinessRepo;
 using CommonDLL.DTO;
@@ -42,7 +42,7 @@ namespace WebAssessment.Controllers
             try
             {
 
-                return GetCustomerDetailInfo().Id;
+                return GetUserDetailInfo().Id;
 
             }
             catch (Exception)
@@ -53,17 +53,17 @@ namespace WebAssessment.Controllers
 
         }
 
-        public Users GetCustomerDetailInfo()
+        public Users GetUserDetailInfo()
         {
 
-            if (Session["CustomerDetail"] != null)
+            if (Session["UserDetail"] != null)
             {
-                return (Users)Session["CustomerDetail"];
+                return (Users)Session["UserDetail"];
             }
             else
             {
                 var customer = userlogic.GetUserByUsername(GetUserName());
-                Session["CustomerDetail"] = customer;
+                Session["UserDetail"] = customer;
                 return customer;
             }
                        

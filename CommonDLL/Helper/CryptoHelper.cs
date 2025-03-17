@@ -10,7 +10,7 @@ namespace CommonDLL.Helper
       public class CryptoHelper
     {
 
-        private const string Key = "AspirePasswordCode"; // dont change this key, aspire is using the same key, you will also need to re-encrtpt all password
+        private const string Key = "WebPasswordCode"; // dont change this key, aspire is using the same key, you will also need to re-encrtpt all password
         private static TripleDESCryptoServiceProvider GetCryproProvider()
         {
             var md5 = new MD5CryptoServiceProvider();

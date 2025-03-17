@@ -16,13 +16,15 @@ namespace CommonDLL.DTO
         public int Code { get; set; }
 
         [MaxLength(50)]
+        [Required]
         public string Name { get; set; }
-
         [MaxLength(50)]
         public string Surname { get; set; }
 
         [Required]
         [MaxLength(50)]
+        [Display(Name = "Identity Number")]
+
         public string IdNumber { get; set; }
 
         public ICollection<Accounts> Accounts { get; set; }

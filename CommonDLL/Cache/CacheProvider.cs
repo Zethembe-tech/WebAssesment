@@ -7,7 +7,7 @@ using System;
 
 #endregion
 
-namespace AspireClient.Controllers.Cache
+namespace WebAssessment.Controllers.Cache
 {
     public class CacheProvider : ICacheProvider
     {

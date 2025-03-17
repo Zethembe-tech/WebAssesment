@@ -33,5 +33,6 @@ namespace CommonDLL.DTO
 
         [ForeignKey("AccountCode")]
         public Accounts Account { get; set; }
+        public int AccountNumber { get; set; }
     }
 }

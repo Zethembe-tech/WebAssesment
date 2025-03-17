@@ -1,0 +1,64 @@
+﻿@model CommonDLL.DTO.Persons
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Persons Details</h2>
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Surname)</th>
+            <th>@Html.DisplayNameFor(model => model.IdNumber)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Html.DisplayFor(model => model.Name)</td>
+            <td>@Html.DisplayFor(model => model.Surname)</td>
+            <td>@Html.DisplayFor(model => model.IdNumber)</td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = Model.Code }, new { @class = "btn btn-primary btn-sm" })
+                |
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary btn-sm" })
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+@*<div>
+    <h4>Persons</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Surname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Surname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IdNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IdNumber)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Code }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>*@

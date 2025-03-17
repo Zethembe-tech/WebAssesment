@@ -1,22 +1,28 @@
-﻿@model CommonDLL.DTO.Accounts
+﻿@model CommonDLL.DTO.AccountViewModel
 
 @{
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete</h2>
+<h2>Delete account</h2>
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Accounts</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.PersonName)
+            @Html.DisplayNameFor(model => model.Person.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.PersonName)
+            @Html.DisplayFor(model => model.Person.Name)
         </dd>
 
         <dt>
@@ -37,12 +43,13 @@
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary btn-sm" })
         </div>
     }
 </div>

@@ -46,5 +46,15 @@ namespace BusinessLogicDLL.BusinessRepo
             return acc.DeleteAccount(Code);
 
         }
+        public string UpdateStatus(int Code, string Status)
+        {
+            return acc.UpdateStatus(Code, Status);
+
+        }
+        public string CheckStatus(int Code)
+        {
+            return acc.CheckStatus(Code);
+
+        }
     }
 }

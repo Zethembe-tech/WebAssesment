@@ -26,15 +26,12 @@ namespace CommonDLL.DTO
         [Required]
         [Column(TypeName = "money")]
         [Display(Name = "Outstanding Balance")]
-
         public decimal OutstandingBalance { get; set; }
+        public string Status { get; set; }
 
         [ForeignKey("PersonCode")]
-        public Persons Persons { get; set; }
-        [NotMapped]
-        [Display(Name = "Person Name")]
+        public Persons Person { get; set; }
 
-        public string PersonName { get; set; }
         public ICollection<Transactions> Transactions { get; set; }
     }
 }

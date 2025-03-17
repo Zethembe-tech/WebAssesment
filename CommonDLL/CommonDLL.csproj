@@ -39,6 +39,10 @@
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\RnR_Assess\RnR_Assess\Bin\System.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,6 +54,9 @@
     <Compile Include="Cache\CacheProvider.cs" />
     <Compile Include="Cache\ICacheProvider.cs" />
     <Compile Include="DTO\Accounts.cs" />
+    <Compile Include="DTO\LoginDTO.cs" />
+    <Compile Include="DTO\TransactionsViewModel.cs" />
+    <Compile Include="DTO\AccountViewModels.cs" />
     <Compile Include="DTO\Persons.cs" />
     <Compile Include="DTO\Transactions.cs" />
     <Compile Include="DTO\Users.cs" />

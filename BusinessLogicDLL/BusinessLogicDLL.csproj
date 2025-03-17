@@ -44,6 +44,7 @@
     <Compile Include="BusinessRepo\AccountsLogic.cs" />
     <Compile Include="BusinessRepo\PersonsLogic.cs" />
     <Compile Include="BusinessRepo\TransactionsLogic.cs" />
+    <Compile Include="BusinessRepo\LoginLogic.cs" />
     <Compile Include="BusinessRepo\UsersLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

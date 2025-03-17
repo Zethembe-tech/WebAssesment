@@ -1,7 +1,6 @@
 ﻿using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using CommonDLL.DTO;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -30,9 +29,5 @@ namespace WebAssessment.Models
         {
             return new ApplicationDbContext();
         }
-        public DbSet<Persons> Persons { get; set; }
-        public DbSet<Accounts> Accounts { get; set; }
-        public DbSet<Transactions> Transactions { get; set; }
-        public DbSet<Users> Users { get; set; }
     }
 }
