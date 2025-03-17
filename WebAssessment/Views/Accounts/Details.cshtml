@@ -1,0 +1,32 @@
+﻿@model CommonDLL.DTO.Accounts
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Accounts details</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Person.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.AccountNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.OutstandingBalance)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Html.DisplayFor(model => model.Person.Name)</td>
+            <td>@Html.DisplayFor(model => model.AccountNumber)</td>
+            <td>@Html.DisplayFor(model => model.OutstandingBalance)</td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = Model.Code }, new { @class = "btn btn-primary btn-sm" })
+                |
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary btn-sm" })
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+

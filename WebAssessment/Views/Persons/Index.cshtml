@@ -1,0 +1,80 @@
+﻿@model IEnumerable<CommonDLL.DTO.Persons>
+
+@{
+    ViewBag.Title = "Index";
+}
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<h2>List of people</h2>
+<form method="get" class="mb-3">
+    <div class="row">
+        <div class="col-md-3">
+            <input type="text" name="searchTerm" class="form-control" placeholder="Search by Surname" value="@ViewBag.SearchTerm">
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="searchAccountNumber" class="form-control" placeholder="Search by Account Number" value="@ViewBag.SearchAccountNumber">
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="searchIdNumber" class="form-control" placeholder="Search by Identity Number" value="@ViewBag.SearchIdNumber">
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+        <div class="col-md-1">
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Reset</a>
+        </div>
+    </div>
+</form>
+<br />
+<p>
+    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-success" })
+</p>
+<br />
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Surname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdNumber)
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdNumber)
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = item.Code }, new { @class = "btn btn-primary btn-sm" })
+                    |
+                    <form action="@Url.Action("Delete", "Persons", new { id = item.Code })" method="post" onsubmit="return confirm('Are you sure you want to delete this person?');" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
